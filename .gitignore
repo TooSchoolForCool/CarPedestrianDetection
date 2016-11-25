@@ -13,6 +13,11 @@ paper/
 # shell exe file
 *.sh
 
+# media files
+*.jpg
+*.ppm
+*.bmp
+
 
 =======
 >>>>>>> 72d92f3e0e42422be45834869c4e981a7a179c17
