@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 # My own Material Folder
 dataSet/
 paper/
@@ -13,6 +14,8 @@ paper/
 *.sh
 
 
+=======
+>>>>>>> 72d92f3e0e42422be45834869c4e981a7a179c17
 # Byte-compiled / optimized / DLL files
 __pycache__/
 *.py[cod]
