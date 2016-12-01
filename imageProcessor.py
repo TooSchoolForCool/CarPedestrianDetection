@@ -36,7 +36,7 @@ def HOG4Human(img):
 #		height: load the image in height of height(param)
 # return:
 # 		images: a list of images loaded 		
-def loadImages(root=None, width=None, height=None):
+def loadImages(root, width=None, height=None):
 	if root is None:
 		print "loadImages: path does not exist"
 		quit(1)
@@ -68,7 +68,16 @@ def loadImages(root=None, width=None, height=None):
 	cv2.waitKey(0)
 	return images
 
-
+# resize the img file
+# parameters:
+#		img: the img to be resized
+#		width: new width
+#		height: new height
+# return:
+# 		newImg: new image with width of new width and height of new height	
+def resize(img, width, height):
+	newImg = cv2.resize(img, None, fx = 1.0*width/img.shape[1], fy = 1.0*height/img.shape[0], interpolation = cv2.INTER_CUBIC)
+	return newImg
 
 def tester():
 	print "Tester for imageProcessor:"
