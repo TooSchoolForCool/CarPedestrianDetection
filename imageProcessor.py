@@ -47,11 +47,10 @@ def loadImages(root, width=None, height=None):
 		for file in files:
 			try:
 				fileName, extension = file.split(".")
-				if extension not in ["jpg", "bmp", "ppm"]:
+				if extension not in ["jpg", "bmp", "BMP", "ppm"]:
 					continue
 			except:
 				continue
-			
 
 			imgPath = path + "/" + file
 			img = cv2.imread(imgPath)
@@ -61,11 +60,9 @@ def loadImages(root, width=None, height=None):
 				quit(1)
 
 			if width is not None and height is not None:
-				img = cv2.resize(img, None, fx = 1.0*width/img.shape[1], fy = 1.0*height/img.shape[0], interpolation = cv2.INTER_CUBIC)
+				img = resize(img, width, height)
 			images.append(img)
 
-	cv2.imshow("img", images[0])
-	cv2.waitKey(0)
 	return images
 
 # resize the img file

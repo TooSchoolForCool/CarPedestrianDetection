@@ -47,9 +47,7 @@ def tester4human(dataBase):
 
 # foo function, fool function :)
 def foo():
-	img = cv2.imread("1.ppm")
-	cv2.imshow("img", img)
-	cv2.waitKey(0)
+	imageProcessor.loadImages("./", 10, 100)
 
 # main function, parses the arguments from the command line
 def main(argv):
@@ -58,7 +56,7 @@ def main(argv):
 	isTestMode = True
 
 	try:
-		opts, args = getopt.getopt(argv[1:], 'r', ["test=", "realTime", "dataBase="])
+		opts, args = getopt.getopt(argv[1:], 'r', ["test=", "realtime", "database="])
 	except getopt.GetoptError, err:
 		print str(err)
 		quit(1)
@@ -70,7 +68,7 @@ def main(argv):
 				tester = tester4human
 		elif opt in ["-r", "--realTime"]:
 			isTestMode = False
-		elif opt in ["--dataBase"]:
+		elif opt in ["--database"]:
 			if arg in ["class", "Class"]:
 				dataBase = IN_CLASS_DATABASE
 			elif arg in ["mit", "MIT"]:
