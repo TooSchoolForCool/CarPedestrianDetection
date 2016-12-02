@@ -4,8 +4,8 @@ import imutils
 import cv2
 import numpy as np
 
-def HOG4Human(img):
-	winSize = (64, 96)
+def HOG(img):
+	winSize = (128, 96)
 	blockSize = (16,16)
 	blockStride = (8,8)
 	cellSize = (8,8)
@@ -22,9 +22,10 @@ def HOG4Human(img):
 
 	winStride = (8,8)
 	padding = (8,8)
-	locations = [[1, 2]]
+	locations = [[0,0]]
 
-	hist = hog.compute(img, winStride, padding, locations)
+	# hist = hog.compute(img, winStride, padding, locations)
+	hist = hog.compute(img)
 
 	return hist
 

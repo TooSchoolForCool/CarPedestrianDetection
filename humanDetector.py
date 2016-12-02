@@ -19,7 +19,7 @@ class humanDetector:
 		# a function-pointer list which contain some detection functions for
 		# some specific classifier. Each classifier will map to ONLY one
 		# detection function in this list.
-		self.detectFuncPointer = [self.__detectHuman4cvDefaultHogSVM]
+		self.detectFuncPointer_ = [self.__detectHuman4cvDefaultHogSVM]
 
 
 	# initialize the default SVM human classifier provided by opencv using hog feature
@@ -38,7 +38,7 @@ class humanDetector:
 	#		img: the modified image file with detected object rectangled
 	#		rois: regions of interst, i.e., the rectangle area (x1, y1, x2, y2)
 	def detectHuman(self, img):
-		return self.detectFuncPointer[self.classifierType_](img)
+		return self.detectFuncPointer_[self.classifierType_](img)
 
 
 	# private function

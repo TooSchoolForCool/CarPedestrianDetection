@@ -2,6 +2,8 @@ import os
 import sys
 import getopt
 import cv2
+import numpy as np
+import svm
 import imageProcessor
 import humanDetector
 
@@ -47,7 +49,38 @@ def tester4human(dataBase):
 
 # foo function, fool function :)
 def foo():
-	imageProcessor.loadImages("./", 10, 100)
+	detector = svm.SVM()
+	detector.setLinearSVM()
+
+def foo1():
+	train_pts = 30  
+
+	rand1 = np.ones((train_pts,2)) * (-2) + np.random.rand(train_pts, 2)
+	# print('rand1: ')
+	# print(rand1)  
+
+	rand2 = np.ones((train_pts,2)) + np.random.rand(train_pts, 2)  
+	# print('rand2: ')  
+	# print(rand2)  
+
+
+	train_data = np.vstack((rand1, rand2))  
+	train_data = np.array(train_data, dtype='float32')  
+	train_label = np.vstack( (np.zeros((train_pts,1), dtype='int32'), np.ones((train_pts,1), dtype='int32')))
+
+
+	svm = cv2.ml.SVM_create()  
+	svm.setType(cv2.ml.SVM_C_SVC)
+	svm.setKernel(cv2.ml.SVM_LINEAR)  
+	svm.setC(1.0)  
+
+	ret = svm.train(train_data, cv2.ml.ROW_SAMPLE, train_label) 
+
+	pt = np.array(np.random.rand(20,2) * 4 - 2, dtype='float32')  
+	(ret, res) = svm.predict(pt)
+
+	print("res = ")  
+	print(res)  
 
 # main function, parses the arguments from the command line
 def main(argv):
