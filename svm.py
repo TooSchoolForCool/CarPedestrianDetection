@@ -17,18 +17,19 @@ class SVM:
 	# return:
 	#		img: the modified image file with detected object rectangled
 	#		rois: regions of interst, i.e., the rectangle area (x1, y1, x2, y2)
-	def detectCar(self, img):
-		pass
+	def predict(self, vector):
+		ret, res = self.svm_.predict(vector)
+		return res
 
 	def setLinearSVM(self):
 		svm = cv2.ml.SVM_create()  
 		svm.setType(cv2.ml.SVM_C_SVC)
-		svm.setKernel(cv2.ml.SVM_LINEAR)  
-		# svm.setC(1.0)
+		svm.setKernel(cv2.ml.SVM_LINEAR) 
+		svm.setC(1.0)
 		self.svm_ = svm
 
-	def train(self, dataSet):
-		pass
+	def train(self, dataSet, labels):
+		self.svm_.train(dataSet, cv2.ml.ROW_SAMPLE, labels)
 
 
 
