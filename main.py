@@ -33,20 +33,29 @@ ALL_DATABASE = MIT_DATABASE + IN_CLASS_DATABASE
 Global Variable Define END
 """
 
-# tester for human
-# dataBase: the root directory of the dataBase for testing
-def tester4human(database):
-	if database is None:
-		print "In main.py tester4human(): dataBase is None"
-		quit(1)
 
-	for repo in database:
-		print "Testing Human Detector"
-		print "directory:", repo
 
-		humanDetector.tester(repo)
+def getHumanDetector(winSize):
+	svm4human = svm.SVM()
+	svm4human.setLinearSVM()
 
-		print "-----------------------"
+	detector4human = detector.Detector(winSize)
+	detector4human.setClassifier(svm4human)
+
+	dataSet = []
+	labels = []
+
+	posSamples = imageProcessor.loadImages(IN_CLASS_HUMAN_SET_TRAIN)
+	dataSet += posSamples
+	labels += [1 for i in range(len(posSamples))]
+
+	negSamples = imageProcessor.loadImages(IN_CLASS_BACKGROUND_SET)
+	dataSet += negSamples
+	labels += [0 for i in range(len(negSamples))]
+
+	detector4human.train(dataSet, labels)
+
+	return detector4human
 
 
 def getCarDetector(winSize):
@@ -70,6 +79,29 @@ def getCarDetector(winSize):
 	carDetector.train(dataSet, labels)
 
 	return carDetector
+
+# tester for human
+# dataBase: the root directory of the dataBase for testing
+def tester4human(database):
+	detector4human = getHumanDetector((96, 168))
+
+	for repo in database:
+		images = imageProcessor.loadImages(repo)
+
+		numOfHuman, numOfNonHuman = 0, 0
+		for img in images:
+			res = detector4human.predict(img)
+			if res == 1.0:
+				numOfHuman += 1
+			else:
+				numOfNonHuman += 1
+
+		print "Testing Human Detector"
+		print "directory:", repo
+		print "number of human:", numOfHuman
+		print "number of non-human:", numOfNonHuman
+		print "ratio of human:", 1.0 * numOfHuman / (numOfHuman + numOfNonHuman)
+		print "-----------------------"
 
 
 # tester for human
@@ -97,8 +129,8 @@ def tester4car(database):
 
 # foo function, fool function :)
 def foo():
-	detector = svm.SVM()
-	detector.setLinearSVM()
+	img = cv2.imread("humanSample.jpg")
+	print img.shape
 
 def foo1():
 	train_pts = 30  
@@ -176,7 +208,7 @@ def main(argv):
 	if isTestMode:
 		tester(dataBase)
 	else:
-		foo1()
+		foo()
 
 
 if __name__ == '__main__':
