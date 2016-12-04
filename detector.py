@@ -18,7 +18,6 @@ class Detector:
 	# labels is a list (not np.array)
 	def train(self, dataSet, labels):
 		featureVectorSet = []
-
 		for img in dataSet:
 			feature = self.__convert2RowSample(self.descriptor_(img), "float32")
 			featureVectorSet.append(feature)
@@ -29,6 +28,10 @@ class Detector:
 		self.classifier_.train(featureVectorSet, labels)
 
 	def detect(self, img):
+		if img is None:
+			print "detector detect(): no image input"
+			quit()
+		
 		featureVector = self.descriptor_(img)
 		rowData = self.__convert2RowSample(featureVector, "float32")
 		rowData = np.array([rowData], dtype="float32")
