@@ -6,7 +6,6 @@ import numpy as np
 import svm
 import detector
 import imageProcessor
-import humanDetector
 
 """
 Global variable
@@ -26,8 +25,16 @@ MIT_HUMAN_SET = "./dataSet/MITDatabase/pedestrians"
 MIT_CAR_SET = "./dataSet/MITDatabase/cars"
 MIT_DATABASE = [MIT_HUMAN_SET, MIT_CAR_SET]
 
+# My Test Case
+MY_TEST_CASE = ["./dataSet/myTestCase"]
+
 # All database sets
 ALL_DATABASE = MIT_DATABASE + IN_CLASS_DATABASE
+
+# test base
+CAR_DATABASE = "/Users/zeyuzhang/Documents/HNU/Pattern Recognition/Project2/dataSet/classTest/car"
+PEOPLE_DATABASE = "/Users/zeyuzhang/Documents/HNU/Pattern Recognition/Project2/dataSet/classTest/people"
+IN_CLASS_TEST = [CAR_DATABASE, PEOPLE_DATABASE]
 
 """
 Global Variable Define END
@@ -45,13 +52,23 @@ def getHumanDetector(winSize):
 	dataSet = []
 	labels = []
 
+	# positive samples
 	posSamples = imageProcessor.loadImages(IN_CLASS_HUMAN_SET_TRAIN)
 	dataSet += posSamples
 	labels += [1 for i in range(len(posSamples))]
 
+	posSamples = imageProcessor.loadImages(MIT_HUMAN_SET)
+	dataSet += posSamples
+	labels += [1 for i in range(len(posSamples))]
+
+	# negative samples
 	negSamples = imageProcessor.loadImages(IN_CLASS_BACKGROUND_SET)
 	dataSet += negSamples
 	labels += [0 for i in range(len(negSamples))]
+
+	# negSamples = imageProcessor.loadImages(IN_CLASS_CAR_SET_TEST)
+	# dataSet += negSamples
+	# labels += [0 for i in range(len(negSamples))]
 
 	detector4human.train(dataSet, labels)
 
@@ -68,13 +85,31 @@ def getCarDetector(winSize):
 	dataSet = []
 	labels = []
 
-	posSamples = imageProcessor.loadImages(IN_CLASS_CAR_SET_TRAIN)
+	# positive samples
+	posSamples = imageProcessor.loadImages(IN_CLASS_CAR_SET_TEST)
 	dataSet += posSamples
 	labels += [1 for i in range(len(posSamples))]
 
+	posSamples = imageProcessor.loadImages(MIT_CAR_SET)
+	dataSet += posSamples
+	labels += [1 for i in range(len(posSamples))]
+
+	# negative samples
 	negSamples = imageProcessor.loadImages(IN_CLASS_BACKGROUND_SET)
 	dataSet += negSamples
 	labels += [0 for i in range(len(negSamples))]
+
+	# negSamples = imageProcessor.loadImages(IN_CLASS_HUMAN_SET_TRAIN)
+	# dataSet += negSamples
+	# labels += [0 for i in range(len(negSamples))]
+
+	# negSamples = imageProcessor.loadImages(IN_CLASS_HUMAN_SET_TEST)
+	# dataSet += negSamples
+	# labels += [0 for i in range(len(negSamples))]
+
+	# negSamples = imageProcessor.loadImages(MIT_HUMAN_SET)
+	# dataSet += negSamples
+	# labels += [0 for i in range(len(negSamples))]
 
 	carDetector.train(dataSet, labels)
 
@@ -83,7 +118,7 @@ def getCarDetector(winSize):
 # tester for human
 # dataBase: the root directory of the dataBase for testing
 def tester4human(database):
-	detector4human = getHumanDetector((96, 168))
+	detector4human = getHumanDetector((64, 96))
 
 	for repo in database:
 		images = imageProcessor.loadImages(repo)
@@ -129,52 +164,77 @@ def tester4car(database):
 
 # foo function, fool function :)
 def foo():
-	img = cv2.imread("humanSample.jpg")
-	print img.shape
+	# humanDetector = getCarDetector((128, 96))
+	humanDetector = getHumanDetector((64, 96))
+
+	img = cv2.imread("3.jpg")
+	# img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+
+	img, rois = humanDetector.detectMultiScale(img, (20, 20), (8, 8), 1.2)
+	# img, rois = humanDetector.detect(img)
+	# img, rois = humanDetector.demo(img, (10, 10), 1.2)
+
+	numOfHuman, numOfNonHuman = 0, 0
+	for img in rois:
+		res = humanDetector.predict(img)
+		if res == 1.0:
+			# path = "./test/" + str(numOfHuman) + ".jpg"
+			# cv2.imwrite(path, img)
+			numOfHuman += 1
+		else:
+			numOfNonHuman += 1
+		path = "./test/" + str(numOfHuman+numOfNonHuman) + ".jpg"
+		cv2.imwrite(path, img)
+
+	print "Testing Human Detector"
+	print "number of human:", numOfHuman
+	print "number of non-human:", numOfNonHuman
+	print "ratio of human:", 1.0 * numOfHuman / (numOfHuman + numOfNonHuman)
+	print "-----------------------"
+
+	database = ["./test"]
+
+	for repo in database:
+		images = imageProcessor.loadImages(repo)
+
+		numOfHuman, numOfNonHuman = 0, 0
+		for img in images:
+			res = humanDetector.predict(img)
+			if res == 1.0:
+				numOfHuman += 1
+			else:
+				numOfNonHuman += 1
+
+		print "Testing Human Detector"
+		print "directory:", repo
+		print "number of human:", numOfHuman
+		print "number of non-human:", numOfNonHuman
+		print "ratio of human:", 1.0 * numOfHuman / (numOfHuman + numOfNonHuman)
+		print "-----------------------"
+
+	# cv2.imshow("img", img)
+	# cv2.waitKey(0)
 
 def foo1():
-	train_pts = 30  
+	humanDetector = getHumanDetector((128, 96))
 
-	rand1 = np.ones((train_pts,2)) * (-2) + np.random.rand(train_pts, 2)
-	# print('rand1: ')
-	# print(rand1)  
+	img = cv2.imread("7.jpg")
 
-	rand2 = np.ones((train_pts,2)) + np.random.rand(train_pts, 2)  
-	# print('rand2: ')  
-	# print(rand2)  
+	img, rois = humanDetector.demo(img, (10, 10), 1.2)
 
+def demo():
+	humanDetector = getCarDetector((128, 96))
+	# humanDetector = getHumanDetector((64, 128))
 
-	train_data = np.vstack((rand1, rand2))
-	# print type(train_data)
-	# print train_data, "\n---------------------"
-	train_data = np.array(train_data, dtype='float32')
-	# print train_data
-	# print type(train_data)
+	img = cv2.imread("5.jpg")
+	# img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
 
+	img, rois = humanDetector.detect(img)
+	# img, rois = humanDetector.detect(img)
+	# img, rois = humanDetector.demo(img, (10, 10), 1.2)
 
-	train_label = [[1 if i < 30 else 0] for i in range(60)]
-	train_label = np.array(train_label, dtype='int32')
-	# print train_label
-
-
-	svm = cv2.ml.SVM_create()  
-	svm.setType(cv2.ml.SVM_C_SVC)
-	svm.setKernel(cv2.ml.SVM_LINEAR)  
-	svm.setC(1.0)  
-
-	print train_data.shape
-	print train_label.shape
-
-	ret = svm.train(train_data, cv2.ml.ROW_SAMPLE, train_label) 
-
-	pt = np.array(np.random.rand(20,2) * 4 - 2, dtype='float32')  
-
-	print pt.shape
-
-	(ret, res) = svm.predict(pt)
-
-	print("res = ")  
-	print(res)  
+	cv2.imshow("img", img)
+	cv2.waitKey(0)
 
 # main function, parses the arguments from the command line
 def main(argv):
@@ -202,13 +262,16 @@ def main(argv):
 				dataBase = IN_CLASS_DATABASE
 			elif arg in ["mit", "MIT"]:
 				dataBase = MIT_DATABASE
+			elif arg in ["my", "MY", "My"]:
+				dataBase = MY_TEST_CASE
 			elif arg in ["all", "ALl"]:
 				dataBase = ALL_DATABASE
 
 	if isTestMode:
-		tester(dataBase)
+		tester4human(IN_CLASS_TEST)
+		tester4car(IN_CLASS_TEST)
 	else:
-		foo()
+		foo1()
 
 
 if __name__ == '__main__':

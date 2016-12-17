@@ -6,6 +6,10 @@ import imageProcessor
 
 from imutils.object_detection import non_max_suppression
 
+# svm_params = dict( kernel_type = cv2.SVM_LINEAR,
+#                     svm_type = cv2.SVM_C_SVC,
+#                     C=2.67, gamma=5.383 )
+
 class SVM:
 	def __init__(self):
 		# the pointer point to the classifier
@@ -25,12 +29,15 @@ class SVM:
 		svm = cv2.ml.SVM_create()  
 		svm.setType(cv2.ml.SVM_C_SVC)
 		svm.setKernel(cv2.ml.SVM_LINEAR) 
-		svm.setC(1.0)
+		svm.setC(0.5)
 		self.svm_ = svm
 
 	def train(self, dataSet, labels):
 		self.svm_.train(dataSet, cv2.ml.ROW_SAMPLE, labels)
 
+	def getSupportVectors(self):
+		self.svm_.save('svm_data.dat')
+		return self.svm_.getSupportVectors()
 
 
 # Tester for human detector

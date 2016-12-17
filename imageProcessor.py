@@ -28,7 +28,7 @@ def HOG(img):
 
 	return hist
 
-def getHOGDescriptor(winSize):
+def getMultiScaleDetector(winSize):
 	blockSize = (16,16)
 	blockStride = (8,8)
 	cellSize = (8,8)
@@ -38,6 +38,22 @@ def getHOGDescriptor(winSize):
 	histogramNormType = 0
 	L2HysThreshold = 2.0000000000000001e-01
 	gammaCorrection = 0
+	nlevels = 64
+	
+	detector = cv2.HOGDescriptor(winSize,blockSize,blockStride,cellSize,nbins,derivAperture,winSigma,
+	                         histogramNormType,L2HysThreshold,gammaCorrection,nlevels)
+	return detector
+
+def getHOGDescriptor(winSize):
+	blockSize = (16,16)
+	blockStride = (8,8)
+	cellSize = (8,8)
+	nbins = 9
+	derivAperture = 1
+	winSigma = 4. 
+	histogramNormType = 0
+	L2HysThreshold = 2.0000000000000001e-01
+	gammaCorrection = 1
 	nlevels = 64
 	
 	hog = cv2.HOGDescriptor(winSize,blockSize,blockStride,cellSize,nbins,derivAperture,winSigma,
@@ -79,6 +95,9 @@ def loadImages(root, width=None, height=None):
 
 			if width is not None and height is not None:
 				img = resize(img, width, height)
+
+			# img = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+			
 			images.append(img)
 
 	return images
@@ -91,7 +110,10 @@ def loadImages(root, width=None, height=None):
 # return:
 # 		newImg: new image with width of new width and height of new height	
 def resize(img, width, height):
-	newImg = cv2.resize(img, None, fx = 1.0*width/img.shape[1], fy = 1.0*height/img.shape[0], interpolation = cv2.INTER_CUBIC)
+	try:
+		newImg = cv2.resize(img, None, fx = 1.0*width/img.shape[1], fy = 1.0*height/img.shape[0], interpolation = cv2.INTER_CUBIC)
+	except:
+		print width, height, img.shape[1], img.shape[0]
 	return newImg
 
 def tester():
