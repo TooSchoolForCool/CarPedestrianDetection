@@ -1,7 +1,6 @@
 <<<<<<< HEAD
 # My own Material Folder
-dataSet/
-paper/
+materials/
 
 # microsoft files and pdf files
 *.doc
@@ -14,9 +13,9 @@ paper/
 *.sh
 
 # media files
-*.jpg
-*.ppm
-*.bmp
+# *.jpg
+# *.ppm
+# *.bmp
 
 
 =======

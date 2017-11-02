@@ -1,10 +1,10 @@
 import os
 import cv2
 import numpy as np
-import imutils
+# import imutils
 import imageProcessor
 
-from imutils.object_detection import non_max_suppression
+# from imutils.object_detection import non_max_suppression
 
 # svm_params = dict( kernel_type = cv2.SVM_LINEAR,
 #                     svm_type = cv2.SVM_C_SVC,
